@@ -24,14 +24,17 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
   tempdf <- collapse::fsubset(sourcedata,
                               SubHSCPName ==  hscpval) %>%
     collapse::fmutate(
-      {{ycol}} = dplyr::case_when(
+      {{ycol}} := dplyr::case_when(
         Sex == "Male" ~ {{ycol}} * -1,
         .default = {{ycol}}))
 
   female_data = tempdf %>% filter({{fill_col}} == "Female")
   male_data = tempdf %>% filter({{fill_col}} == "Male")
 
-  p <- ggplot2::ggplot(data = NULL, ggplot2::aes({{xcol}}, {{ycol}}, fill = {{fill_col}})) +
+  p <- ggplot2::ggplot(data = NULL,
+                       ggplot2::aes({{xcol}},
+                                    {{ycol}},
+                                    fill = {{fill_col}})) +
     ggplot2::geom_col(data = female_data) +
     ggplot2::geom_col(data = male_data)
 
@@ -40,8 +43,10 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
                                      'Female' = female_col),
                              labels = c("Male", "Female"))
 
-p <- p +  ggplot2::scale_y_continuous(breaks = pretty(tempdf$pop_age_band_total, n = nbreaks),
-                       labels = abs(pretty(tempdf$pop_age_band_total, n = nbreaks)))
+p <- p +  ggplot2::scale_y_continuous(breaks = pretty(tempdf$pop_age_band_total,
+                                                      n = nbreaks),
+                       labels = abs(pretty(tempdf$pop_age_band_total,
+                                           n = nbreaks)))
 
 p <- p +  ggplot2::coord_flip()
 
