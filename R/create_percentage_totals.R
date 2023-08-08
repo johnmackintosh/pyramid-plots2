@@ -11,10 +11,13 @@ create_percentage_totals <- function(.dt1,
   divisor <- eval(divisor)
 
   out <- .dt2[.dt1, on = joincols
-              ][,V1 := signif((get(..numerator) / get(..divisor)) * 100,3), by = grouping_cols][]
+              ][, eval(new_var_name) := signif(get(numerator)/get(divisor),3) * 100,
+                by = grouping_cols][]
 
-  data.table::setnames(out,
-                       old = "V1",
-                       new = eval(new_var_name))
+  # data.table::setnames(out,
+  #                      old = "V1",
+  #                      new = eval(new_var_name))
 return(out)
 }
+
+
