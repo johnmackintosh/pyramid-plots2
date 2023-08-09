@@ -113,29 +113,42 @@ list(
   #### Population pyramid totals ####
 
 
+  # for each, create base data, then aggregate to 4 AB  & 9 Highland areas
+  # with subarea to locality()
+
   # GRAND TOTAL Populations by SUBHSCP
-  tar_target(nhsh_high_level_populations, # was population_totals
+  tar_target(nhsh_high_level_populations_base, #  next step reduces to 4 A&B areas
              create_population_totals(nhsh_combined,
                                       new_var_name = "total_pop",
                                       grouping_cols = c("SubHSCPName",
                                                         "Council_area_name"),
                                       !is.na(age_band) & Sex == "persons")),
 
+  tar_target(nhsh_high_level_populations, # was population_totals
+             subarea_to_locality(nhsh_high_level_populations_base,
+                                 summary_var = total_pop,
+                                 SubHSCPName, Council_area_name)),
+
 
 
  # basic pyramid totals
-  tar_target(pyramid_tots,
+  tar_target(pyramid_tots_base,
              create_population_totals(nhsh_combined,
                                       new_var_name = "pop_age_band_total",
                                       grouping_cols = c("Sex",
                                                         "SubHSCPName",
                                                         "pop_age_band",
-                                                        "Council_area_name"),
-                                      !is.na(age_band))),
+                                                        "Council_area_name"),                                                                      !is.na(age_band))),
+
+ # the base data needs aggregated to the 4 A&B and  Highland levels
+ tar_target(pyramid_tots,
+            subarea_to_locality(pyramid_tots_base,
+                                summary_var = pop_age_band_total,
+                                Sex, pop_age_band,
+                                SubHSCPName, Council_area_name)),
 
 
-
- tar_target(age_band_tots,
+ tar_target(age_band_tots_base,
             create_population_totals(nhsh_combined,
                                      new_var_name = "age_band_total",
                                      grouping_cols = c("Sex",
@@ -144,15 +157,28 @@ list(
                                                        "Council_area_name"),
                                      !is.na(age_band))),
 
+ tar_target(age_band_tots,
+            subarea_to_locality(age_band_tots_base,
+                                summary_var = age_band_total,
+                                Sex, age_band,
+                                SubHSCPName, Council_area_name)),
+
+
  # the sex level totals by SUBHSCP - no age band grouping
  # might need these to recreate Figure 2 of CP Profile
- tar_target(sex_pop_totals,
+ tar_target(sex_pop_totals_base,
             create_population_totals(nhsh_combined,
                                      new_var_name = "sex_total_pop",
                                      grouping_cols = c("SubHSCPName",
                                                        "Council_area_name",
                                                        "Sex"),
                                      !is.na(age_band))),
+
+ tar_target(sex_pop_totals,
+            subarea_to_locality(sex_pop_totals_base,
+                                summary_var = sex_total_pop,
+                                Sex,
+                                SubHSCPName, Council_area_name)),
 
 
  tar_target(highland_pop_age_band,
@@ -161,6 +187,11 @@ list(
                                      grouping_cols = c("Sex",
                                                        "pop_age_band"),
                                      !is.na(age_band))),
+#
+#  tar_target(highland_pop_age_band,
+#             subarea_to_locality(highland_pop_age_band_base,
+#                                 summary_var = pop_age_band_total,
+#                                 Sex, pop_age_band)),
 
 
  tar_target(highland_age_band,
@@ -169,6 +200,11 @@ list(
                                      grouping_cols = c("Sex",
                                                        "age_band"),
                                      !is.na(age_band))),
+
+ # tar_target(highland_age_band,
+ #            subarea_to_locality(highland_age_band_base,
+ #                                summary_var = age_band_total,
+ #                                Sex, age_band)),
 
 
  # create combined dataframes with percentage totals
