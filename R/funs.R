@@ -15,6 +15,15 @@ negater <- function(x, print = TRUE){
 
 
 
+sex_as_factor <- function(x) {
+
+  x <- factor(x,
+              levels = c("Female", "Male", "persons"),
+              labels = c("Female", "Male", "Persons"),
+              ordered = TRUE)
+  x
+
+}
 
 
 # the following functions are taken from ggExtra

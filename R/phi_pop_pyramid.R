@@ -29,6 +29,9 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
         {{fill_col}} == "Male" ~ {{ycol}} * -1,
         .default = {{ycol}}))
 
+tempdf <- tempdf %>%
+  mutate({{fill_col}} := sex_as_factor({{fill_col}}))
+
   female_data = tempdf %>% dplyr::filter({{fill_col}} == "Female")
   male_data = tempdf %>% dplyr::filter({{fill_col}} == "Male")
 
@@ -39,17 +42,20 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
     ggplot2::geom_col(data = female_data) +
     ggplot2::geom_col(data = male_data)
 
-  p <- p + ggplot2::scale_fill_manual("",
-                             values = c("Male" = male_col,
-                                     'Female' = female_col),
-                             labels = c("Male", "Female"))
+ p <- p +  ggplot2::coord_flip()
+
+p <- p + ggplot2::scale_fill_manual("",
+                          guide = "legend",
+                           values = c("Male" = male_col,
+                                   "Female" = female_col),
+                           labels = c("Female", "Male"))
 
 p <- p +  ggplot2::scale_y_continuous(breaks = pretty(tempdf$pop_age_band_total,
                                                       n = nbreaks),
                        labels = abs(pretty(tempdf$pop_age_band_total,
                                            n = nbreaks)))
 
-p <- p +  ggplot2::coord_flip()
+
 
 p <- apply_chart_opts(p)
 
