@@ -1,13 +1,36 @@
-# pyramid-plots2
-tidy and plot SAPE 2021 data as population pyramids with {targets}, {purrr} and others
+README
+================
 
-Note : the input data (sape-2021-females.xlsx, sape-2021-males.xlsx and sape-2021-persons.xlsx) is Crown Copyright
+## pyramid-plots2
 
-Original data sources:  
+Code to tidy and plot SAPE 2021 data as population pyramids with
+{targets}, {purrr} and others
 
-- https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/persons/sape-2021-persons.xlsx  
-- https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/males/sape-2021-males.xlsx
-- https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/females/sape-2021-females.xlsx
-  
+Note : the input data (sape-2021-females.xlsx, sape-2021-males.xlsx and
+sape-2021-persons.xlsx) is Crown Copyright
+
+Original data sources:
+
+- <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/persons/sape-2021-persons.xlsx>  
+- <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/males/sape-2021-males.xlsx>
+- <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/females/sape-2021-females.xlsx>
 
 
+
+![](README_files/figure-gfm/visnet-1.png)
+
+## Pyramid Plots
+
+``` r
+hscp <- pyramid_tots %>% distinct(SubHSCPName) %>% pull()
+```
+
+``` r
+hscp |>
+  purrr::walk(\(x) phi_pop_pyramid(pyramid_tots,
+                          hscpval = x,
+                          save_plot = FALSE,
+                          chart_subtitle = x)) 
+```
+
+![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-9.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-10.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-11.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-12.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-13.png)<!-- -->
