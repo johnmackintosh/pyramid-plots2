@@ -24,7 +24,7 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
 
 
   tempdf <- collapse::fsubset(sourcedata,
-                              SubHSCPName ==  hscpval) %>%
+                              CP_Name ==  hscpval) %>%
     dplyr::mutate({{ycol}} := dplyr::case_when(
         {{fill_col}} == "Male" ~ {{ycol}} * -1,
         .default = {{ycol}}))
