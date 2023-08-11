@@ -16,13 +16,12 @@ Original data sources:
 - <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/females/sape-2021-females.xlsx>
 
 
-
 ![](README_files/figure-gfm/visnet-1.png)
 
 ## Pyramid Plots
 
 ``` r
-hscp <- pyramid_tots %>% distinct(SubHSCPName) %>% pull()
+hscp <- pyramid_tots %>% distinct(CP_Name) %>% pull()
 ```
 
 ``` r
