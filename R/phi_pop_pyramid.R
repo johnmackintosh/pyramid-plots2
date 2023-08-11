@@ -4,6 +4,7 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
                         hscpval,
                         xcol = pop_age_band,
                         ycol = pop_age_band_total,
+                        geography_col = CP_Name,
                         fill_col = Sex,
                         male_col = '#0391BF',
                         female_col ="grey70",
@@ -24,7 +25,7 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
 
 
   tempdf <- collapse::fsubset(sourcedata,
-                              SubHSCPName ==  hscpval) %>%
+                              {{geography_col}} ==  hscpval) %>%
     dplyr::mutate({{ycol}} := dplyr::case_when(
         {{fill_col}} == "Male" ~ {{ycol}} * -1,
         .default = {{ycol}}))

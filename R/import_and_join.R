@@ -39,6 +39,7 @@ import_and_join <- function(.df,
 
     # lookup and bring in HSCP names
     DZ2 <- data.table::fread(.hscp_lookup)
+    DZ2[, joinvar := DataZone] # make column to join on
 
     nhsh <- DT[Council_area_name %in% c("Argyll and Bute", "Highland")
     ][, joinvar := Data_zone_code][]
