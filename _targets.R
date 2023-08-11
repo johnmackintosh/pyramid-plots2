@@ -26,6 +26,10 @@ list(
              command = "./inputs/sape-2021-persons.xlsx",
              format = "file"),
 
+  tar_target(sape_long_term_source,
+             command = "./inputs/dz2011-pop-est_09092022.csv",
+             format = "file"),
+
   tar_target(sape_male,
              command = rio::import(sape_source_male, which = 2, skip = 2)),
 
@@ -117,6 +121,10 @@ list(
                             sape_tidy_persons_scotland,
                             sum_variable = "pop_age_band",
                             new_var_name = "pop_age_band_tots")),
+
+  tar_target(sape_long_term,
+             transform_sape_long_term(sape_long_term_source,
+                                      lookup = hscp_lookup)),
 
 
   #### Population pyramid totals ####
