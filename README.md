@@ -21,7 +21,7 @@ Original data sources:
 ## Pyramid Plots
 
 ``` r
-hscp <- pyramid_tots %>% distinct(CP_Name) %>% pull()
+hscp <- pyramid_tots %>% distinct(CP_Name) %>% pull() %>% sort()
 ```
 
 ``` r
