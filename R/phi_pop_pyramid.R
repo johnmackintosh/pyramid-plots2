@@ -2,6 +2,7 @@
 
 phi_pop_pyramid <- function(sourcedata = pyramid_tots,
                         hscpval,
+                        filter_col = CP_Name,
                         xcol = pop_age_band,
                         ycol = pop_age_band_total,
                         fill_col = Sex,
@@ -21,19 +22,21 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
                        location = "./") {
 
 
+# negate the male column values
+# col_breaks so we have a known name for prettifying y axis breaks & labels
 
-
-  tempdf <- collapse::fsubset(sourcedata,
-                              CP_Name ==  hscpval) %>%
+  tempdf <-  sourcedata |>
+    dplyr::filter({{filter_col}} == hscpval) |>
     dplyr::mutate({{ycol}} := dplyr::case_when(
         {{fill_col}} == "Male" ~ {{ycol}} * -1,
-        .default = {{ycol}}))
+        .default = {{ycol}}),
+        col_breaks = {{ycol}})
 
-tempdf <- tempdf %>%
-  mutate({{fill_col}} := sex_as_factor({{fill_col}}))
+tempdf <- tempdf |>
+  dplyr::mutate({{fill_col}} := sex_as_factor({{fill_col}}))
 
-  female_data = tempdf %>% dplyr::filter({{fill_col}} == "Female")
-  male_data = tempdf %>% dplyr::filter({{fill_col}} == "Male")
+  female_data = tempdf |> dplyr::filter({{fill_col}} == "Female")
+  male_data = tempdf |> dplyr::filter({{fill_col}} == "Male")
 
   p <- ggplot2::ggplot(data = NULL,
                        ggplot2::aes({{xcol}},
@@ -50,10 +53,12 @@ p <- p + ggplot2::scale_fill_manual("",
                                    "Female" = female_col),
                            labels = c("Female", "Male"))
 
-p <- p +  ggplot2::scale_y_continuous(breaks = pretty(tempdf$pop_age_band_total,
+
+
+p <- p +  ggplot2::scale_y_continuous(breaks = pretty(tempdf$col_breaks,
                                                       n = nbreaks),
-                       labels = abs(pretty(tempdf$pop_age_band_total,
-                                           n = nbreaks)))
+                                      labels = abs(pretty(tempdf$col_breaks,
+                                                          n = nbreaks)))
 
 
 
