@@ -12,8 +12,13 @@ sape-2021-persons.xlsx) is Crown Copyright
 Original data sources:
 
 - <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/persons/sape-2021-persons.xlsx>  
+
 - <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/males/sape-2021-males.xlsx>
+
 - <https://www.nrscotland.gov.uk/files//statistics/population-estimates/sape-time-series/females/sape-2021-females.xlsx>
+
+- SGURC :
+  <https://www.opendata.nhs.scot/dataset/urban-rural-classification>
 
 
 ![](README_files/figure-gfm/visnet-1.png)

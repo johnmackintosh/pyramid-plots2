@@ -35,6 +35,7 @@ transform_sape_long_term <- function(sourcedata,
   .DT_tidy <- data.table::melt(.DT, id.vars = names_to_keep)
 
   rm(.DT)
+  .DT_tidy[, value := as.integer(value)][]
   .DT_tidy[, variable := gsub("Age", "", variable)][]
   .DT_tidy[variable == '90plus', variable := 90]
   .DT_tidy[,variable := as.numeric(variable)]

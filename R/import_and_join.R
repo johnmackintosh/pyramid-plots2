@@ -21,6 +21,7 @@
 #'
 import_and_join <- function(.df,
                             .hscp_lookup = hscp_lookup,
+                            .sgurc_lookup = sgurc_lookup,
                             nhsh_only = TRUE) {
 
 
@@ -30,22 +31,32 @@ import_and_join <- function(.df,
   oldnames <- names(DT) # original column names
   newnames <- stringr::str_replace_all(oldnames," ", "_")
   data.table::setnames(DT, old =  oldnames, new = newnames)
+  DT[, joinvar := Data_zone_code]
 
 
-  if (!nhsh_only) {
-    return(DT)
-  }
 
 
-    # lookup and bring in HSCP names
-    DZ2 <- data.table::fread(.hscp_lookup)
-    DZ2[, joinvar := DataZone] # make column to join on
+    # lookup and bring in HSCP names, and SGURC classifications
+    DT2 <- data.table::fread(.hscp_lookup)
+    DT2[, joinvar := DataZone] # make column to join on
+
+    DT3 <- data.table::fread(.sgurc_lookup)
+    DT3[, joinvar := DataZone] # make column to join on
+
+    # join to sgurc first
+
+    DT <- DT3[DT, on = "joinvar"][, joinvar := NULL]
+
+    if (!nhsh_only) {
+      return(DT)
+    }
+
 
     nhsh <- DT[Council_area_name %in% c("Argyll and Bute", "Highland")
-    ][, joinvar := Data_zone_code][]
+    ][, joinvar := DataZone]
 
-    nhsh <- DZ2[nhsh, on = "joinvar"
-    ][, joinvar := NULL][]
+
+    nhsh <- DT2[nhsh,  on = c("joinvar" = "DataZone")][, joinvar := NULL][]
 
 
 
