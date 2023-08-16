@@ -116,3 +116,77 @@ rotateTextX <- function(p,
   p
 }
 
+
+
+#' child_age_bander
+#'
+#' assigns each element in a vector of ages to a specific age band
+#' based on the child age bands commonly in use in Public Health
+#'
+#' @param df dataframe or tibble
+#' @param x column to use as a base for age_band
+#' @param factored convert age_band to ordered factor?
+#'
+#' @return
+#' @export
+#'
+#' @examples
+child_age_bander <- function(.df,
+                             x,
+                             factored = TRUE,
+                             printout = FALSE){
+
+  .df <- .df %>%
+    dplyr::mutate(child_age_band =
+                    dplyr::case_when(
+                      {{x}} == 0 ~ "0",
+                      {{x}} %in% c(1:4) ~ "01-04",
+                      {{x}} %in% c(05:11) ~ "05-11",
+                      {{x}} %in% c(12:17) ~ "12-17",
+                      {{x}} %in% c(18:24) ~ "18-24",
+                      {{x}} >= 25  ~ "25+",
+                      TRUE ~ NA_character_))
+
+  if (factored) {
+
+
+    .df <- .df %>%
+      dplyr::mutate(child_age_band = factor(child_age_band,
+                                            levels = c("0",
+                                                       "01-04",
+                                                       "05-11",
+                                                       "12-17",
+                                                       "18-24",
+                                                       "25+"),
+                                            ordered = TRUE)
+      )
+
+
+  }
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

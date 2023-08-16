@@ -27,6 +27,10 @@ transformDT <- function(filename,
                                           "IntZone",
                                           "CP_Name",
                                           "CAName",
+                                          "UrbanRural2fold2020",
+                                          "UrbanRural3fold2020",
+                                          "UrbanRural6fold2020",
+                                          "UrbanRural8fold2020",
                                           "Data_zone_code",
                                           "Data_zone_name",
                                           "Council_area_code",
@@ -47,6 +51,7 @@ transformDT <- function(filename,
 
   #.DT[,`:=`(gender_level = ..gender)][]
   .DT_tidy <- data.table::melt(.DT, id.vars = names_to_keep)
+  .DT_tidy[, value := as.integer(value)][]
   .DT_tidy[, variable := gsub("Age_", "", variable)][]
   .DT_tidy[variable == '90_and_over', variable := 90][]
   .DT_tidy[,variable := as.numeric(variable)][]

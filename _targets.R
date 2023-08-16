@@ -43,23 +43,33 @@ list(
              command = "./inputs/profiles_dz_iz_cp_lookup.csv",
              format = "file"),
 
+  tar_target(sgurc_lookup,
+             command = "./inputs/datazone2011_urban_rural_2020.csv",
+             format = "file"),
+
+
   tar_target(sape_wide_male,
-             import_and_join(sape_male, hscp_lookup)),
+             import_and_join(sape_male,
+                             hscp_lookup,
+                             sgurc_lookup)),
 
   tar_target(sape_wide_male_scotland,
-             import_and_join(sape_male, hscp_lookup, nhsh_only = FALSE)),
+             import_and_join(sape_male, hscp_lookup, sgurc_lookup,
+                             nhsh_only = FALSE)),
 
   tar_target(sape_wide_female,
-             import_and_join(sape_female, hscp_lookup)),
+             import_and_join(sape_female, hscp_lookup, sgurc_lookup)),
 
   tar_target(sape_wide_female_scotland,
-             import_and_join(sape_female, hscp_lookup, nhsh_only = FALSE)),
+             import_and_join(sape_female, hscp_lookup, sgurc_lookup,
+                             nhsh_only = FALSE)),
 
   tar_target(sape_wide_persons,
-             import_and_join(sape_persons, hscp_lookup)),
+             import_and_join(sape_persons, hscp_lookup, sgurc_lookup)),
 
   tar_target(sape_wide_persons_scotland,
-             import_and_join(sape_persons, hscp_lookup,nhsh_only = FALSE)),
+             import_and_join(sape_persons, hscp_lookup, sgurc_lookup,
+                             nhsh_only = FALSE)),
 
   tar_target(sape_tidy_male,
              transformDT(filename = sape_wide_male,
@@ -76,7 +86,12 @@ list(
   tar_target(sape_tidy_male_scotland,
              transformDT(filename = sape_wide_male_scotland,
                          sex = "male",
-                         names_to_keep = c("Data_zone_code",
+                         names_to_keep = c("DataZone",
+                                           "UrbanRural2fold2020",
+                                           "UrbanRural3fold2020",
+                                           "UrbanRural6fold2020",
+                                           "UrbanRural8fold2020",
+                                           "Data_zone_code",
                                            "Data_zone_name",
                                            "Council_area_code",
                                            "Council_area_name",
@@ -86,7 +101,12 @@ list(
   tar_target(sape_tidy_female_scotland,
              transformDT(filename = sape_wide_female_scotland,
                          sex = "female",
-                         names_to_keep = c("Data_zone_code",
+                         names_to_keep = c("DataZone",
+                                           "UrbanRural2fold2020",
+                                           "UrbanRural3fold2020",
+                                           "UrbanRural6fold2020",
+                                           "UrbanRural8fold2020",
+                                           "Data_zone_code",
                                            "Data_zone_name",
                                            "Council_area_code",
                                            "Council_area_name",
@@ -96,7 +116,12 @@ list(
   tar_target(sape_tidy_persons_scotland,
              transformDT(filename = sape_wide_persons_scotland,
                          sex = "persons",
-                         names_to_keep = c("Data_zone_code",
+                         names_to_keep = c("DataZone",
+                                           "UrbanRural2fold2020",
+                                           "UrbanRural3fold2020",
+                                           "UrbanRural6fold2020",
+                                           "UrbanRural8fold2020",
+                                           "Data_zone_code",
                                            "Data_zone_name",
                                            "Council_area_code",
                                            "Council_area_name",
@@ -121,6 +146,13 @@ list(
                             sape_tidy_persons_scotland,
                             sum_variable = "pop_age_band",
                             new_var_name = "pop_age_band_tots")),
+
+  tar_target(scotland_combined_child_age_band,
+             merge_all_tidy(sape_tidy_male_scotland,
+                            sape_tidy_female_scotland,
+                            sape_tidy_persons_scotland,
+                            sum_variable = "child_age_band",
+                            new_var_name = "child_age_band_tots")),
 
   tar_target(sape_long_term,
              transform_sape_long_term(sape_long_term_source,
@@ -162,6 +194,41 @@ list(
                                                        "age_band",
                                                        "Council_area_name"),
                                      !is.na(age_band))),
+
+
+ ## child_age_band_totals
+ tar_target(child_age_band_tots,
+            create_population_totals(nhsh_combined,
+                                     new_var_name = "child_age_band_total",
+                                     grouping_cols = c("Sex",
+                                                       "CP_Name",
+                                                       "child_age_band",
+                                                       "Council_area_name"),
+                                     !is.na(age_band) & child_age_band != "25+")),
+
+
+ tar_target(child_age_band_tots_long_term,
+
+            create_population_totals(.DT = sape_long_term,
+                                     new_var_name = "child_age_band_total",
+                                     grouping_cols = c("CAName",
+                                                       "CP_Name",
+                                                       "Year",
+                                                       "Sex",
+                                                       "child_age_band"),
+                                     !is.na(age_band) & child_age_band != "25+")),
+
+ # child age band totals by sgurc classifcation
+
+ tar_target(child_age_band_sgurc_tots,
+            create_population_totals(nhsh_combined,
+                                     new_var_name = "child_age_band_sgurc_total",
+                                     grouping_cols = c("Sex",
+                                                       "CP_Name",
+                                                       "child_age_band",
+                                                       "Council_area_name",
+                                                       "UrbanRural8fold2020"),
+                                     !is.na(age_band) & child_age_band != "25+")),
 
 
  # the sex level totals by SUBHSCP - no age band grouping
@@ -214,6 +281,28 @@ list(
                                      new_var_name = "percent_of_tot",
                                      numerator = "age_band_total",
                                      divisor = "total_pop")),
+
+ # by child_age_band
+ tar_target(child_age_band_percent_tots,
+            create_percentage_totals(.dt1 = child_age_band_tots,
+                                     .dt2 = nhsh_high_level_populations,
+                                     joincols = c("CP_Name",
+                                                  "Council_area_name"),
+                                     new_var_name = "percent_of_tot",
+                                     numerator = "child_age_band_total",
+                                     divisor = "total_pop")),
+
+ # child age band totals by sgurc classifcation
+
+ tar_target(child_age_band_sgurc_percent_tots,
+            create_percentage_totals(.dt1 = child_age_band_sgurc_tots,
+                                     .dt2 = nhsh_high_level_populations,
+                                     joincols = c("CP_Name",
+                                                  "Council_area_name"),
+                                     new_var_name = "percent_of_tot",
+                                     numerator = "child_age_band_sgurc_total",
+                                     divisor = "total_pop")),
+
 
  # split by sex as well
 
