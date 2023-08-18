@@ -206,6 +206,18 @@ list(
                                                        "Council_area_name"),
                                      !is.na(age_band) & child_age_band != "25+")),
 
+ # include 25+ in calculations
+ tar_target(child_age_band_tots_incl25,
+            create_population_totals(nhsh_combined,
+                                     new_var_name = "child_age_band_total",
+                                     grouping_cols = c("Sex",
+                                                       "CP_Name",
+                                                       "child_age_band",
+                                                       "Council_area_name"),
+                                     !is.na(age_band))),
+
+
+
 
  tar_target(child_age_band_tots_long_term,
 
@@ -218,9 +230,32 @@ list(
                                                        "child_age_band"),
                                      !is.na(age_band) & child_age_band != "25+")),
 
+ # include 25+ in calculations
+ tar_target(child_age_band_tots_long_term_incl25,
+
+            create_population_totals(.DT = sape_long_term,
+                                     new_var_name = "child_age_band_total",
+                                     grouping_cols = c("CAName",
+                                                       "CP_Name",
+                                                       "Year",
+                                                       "Sex",
+                                                       "child_age_band"),
+                                     !is.na(age_band))),
+
  # child age band totals by sgurc classifcation
 
  tar_target(child_age_band_sgurc_tots,
+            create_population_totals(nhsh_combined,
+                                     new_var_name = "child_age_band_sgurc_total",
+                                     grouping_cols = c("Sex",
+                                                       "CP_Name",
+                                                       "child_age_band",
+                                                       "Council_area_name",
+                                                       "UrbanRural8fold2020"),
+                                     !is.na(age_band) & child_age_band != "25+")),
+
+ # include 25 + in calculations
+ tar_target(child_age_band_sgurc_tots_incl25,
             create_population_totals(nhsh_combined,
                                      new_var_name = "child_age_band_sgurc_total",
                                      grouping_cols = c("Sex",
@@ -292,7 +327,18 @@ list(
                                      numerator = "child_age_band_total",
                                      divisor = "total_pop")),
 
- # child age band totals by sgurc classifcation
+ # by child_age_band including 25+
+ tar_target(child_age_band_percent_tots_incl25,
+            create_percentage_totals(.dt1 = child_age_band_tots_incl25,
+                                     .dt2 = nhsh_high_level_populations,
+                                     joincols = c("CP_Name",
+                                                  "Council_area_name"),
+                                     new_var_name = "percent_of_tot",
+                                     numerator = "child_age_band_total",
+                                     divisor = "total_pop")),
+
+
+ # child age band totals by sgurc classification
 
  tar_target(child_age_band_sgurc_percent_tots,
             create_percentage_totals(.dt1 = child_age_band_sgurc_tots,
@@ -302,6 +348,17 @@ list(
                                      new_var_name = "percent_of_tot",
                                      numerator = "child_age_band_sgurc_total",
                                      divisor = "total_pop")),
+
+ # child age band totals by sgurc classification incl 25+
+ tar_target(child_age_band_sgurc_percent_tots_incl25,
+            create_percentage_totals(.dt1 = child_age_band_sgurc_tots_incl25,
+                                     .dt2 = nhsh_high_level_populations,
+                                     joincols = c("CP_Name",
+                                                  "Council_area_name"),
+                                     new_var_name = "percent_of_tot",
+                                     numerator = "child_age_band_sgurc_total",
+                                     divisor = "total_pop")),
+
 
 
  # split by sex as well
