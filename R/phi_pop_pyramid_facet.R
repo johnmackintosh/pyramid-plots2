@@ -1,4 +1,11 @@
-#' Title
+#' Creates faceted pyramid plots
+#'
+#' Create faceted plot, defaulting to facet_wrap. Set gridded to \code{TRUE}
+#' and pass two parameters as a formula to use facet_grid.
+#' Otherwise, pass two parameters to the \code{...} which in turn are
+#' passed to facet_wrap.
+#' Set \code{percentage} to \code{TRUE} to format the x axis as percent
+#'
 #'
 #' @param sourcedata original source data
 #' @param councilcol name of column containing council values
@@ -21,6 +28,8 @@
 #' @param printed should the plot be printed
 #' @param percentage are the y values percentages? If so, the axis values will
 #' be formatted to display "%"
+#' @param gridded use facet_grid instead of facet_wrap? if TRUE, you must pass
+#' the variables to `...` as a formula (x~y)
 #' @param ... any additional values passed will be used to facet the final plot
 #'
 #' @return ggplot2 object
@@ -46,6 +55,8 @@
 #' xlabs = "Age band",
 #' ylabs = "Population",
 #' printed = TRUE,
+#' percentage = FALSE,
+#' gridded = FALSE,
 #' CP_Name)
 #'
 #'
@@ -71,14 +82,32 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
                                   ylabs = "Population",
                                   printed = TRUE,
                                   percentage = FALSE,
+                                  gridded = FALSE,
                                   ...) {
 
 # helper function to wrap by whatever is passed to the dots argument
   wrap_by <- function(...) {
-    facet_wrap(vars(...),
+    ggplot2::facet_wrap(vars(...),
                ncol = facet_cols,
                scales = facet_scales,
                labeller = label_value)
+  }
+
+  grid_by <- function(...){
+
+    # whatever is passed first to ...  is plotted in the rows
+    # so that variable will be the plotted down the way
+    # the second variable is plotted across
+
+
+    vars <-  eval(substitute(alist(...)), envir = parent.frame())
+    vars <- sapply(as.list(vars), deparse)
+
+
+    ggplot2::facet_grid(rows = vars[1],
+                        scales = facet_scales,
+                        labeller = label_wrap_gen(10))
+
   }
 
 
@@ -102,10 +131,7 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
     dplyr::mutate({{ycol}} := dplyr::case_when(
       {{fill_col}} == "Male" ~ {{ycol}} * -1,
       .default = {{ycol}}),
-      col_breaks = {{ycol}}) %>%
-
-
-  # tempdf <- sourcedata  %>%
+      col_breaks = {{ycol}} ) %>%
     dplyr::mutate(., {{fill_col}} := sex_as_factor({{fill_col}}))
 
 
@@ -134,7 +160,14 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
                                                      n = nbreaks)
                                             ),
                                             "%"))
+
+    # p <- p +  ggplot2::scale_y_continuous(
+    #   breaks = pretty(sourcedata$col_breaks, n = nbreaks),
+    #                   labels = scales::label_percent())
+
   }
+
+
 
 
   if (!percentage) {
@@ -150,7 +183,15 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
 
   p <- p +  ggplot2::coord_flip()
 
-  p <- p + wrap_by(...)
+  if (gridded) {
+
+    p <- p + grid_by(...)
+  }
+
+  if (!gridded) {
+    p <- p + wrap_by(...)
+  }
+
 
   p <- apply_chart_opts(p)
 
@@ -160,7 +201,7 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
                                                   "Female" = female_col),
                                        labels = c("Female", "Male"))
 
-  p <- p +  ggplot2::labs(title = chart_title,
+  p <-  p +  ggplot2::labs(title = chart_title,
                           subtitle = chart_subtitle,
                           caption = chart_caption,
                           x = xlabs,
