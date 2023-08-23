@@ -21,7 +21,7 @@ Original data sources:
   <https://www.opendata.nhs.scot/dataset/urban-rural-classification>
 
 
-![](README_files/figure-gfm/visnet-1.png)
+![](README_files/figure-gfm/visnet-1.png)<!-- -->
 
 ## Pyramid Plots
 
@@ -42,5 +42,18 @@ hscp |>
 ## Faceted plot using facet grid and percentages
 
 Child age bands by SGURC classification:
+
+``` r
+phi_pop_pyramid_facet(sgurc_tots,
+                      councilcol = Council_area_name,
+                      councilval = "Highland",
+                      localitycol = CP_Name,
+                      xcol = child_age_band,
+                      ycol = percent_of_tot,
+                      fill_col = Sex,
+                      UrbanRural8fold2020 ~ CP_Name, # faceting variables
+                      percentage = TRUE,
+                      gridded = TRUE) # both required for this plot
+```
 
 ![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
