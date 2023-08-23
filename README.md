@@ -21,6 +21,7 @@ Original data sources:
   <https://www.opendata.nhs.scot/dataset/urban-rural-classification>
 
 
+
 ![](README_files/figure-gfm/visnet-1.png)<!-- -->
 
 ## Pyramid Plots
@@ -38,3 +39,9 @@ hscp |>
 ```
 
 ![](README_files/figure-gfm/unnamed-chunk-2-1.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-2.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-3.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-4.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-5.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-6.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-7.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-8.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-9.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-10.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-11.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-12.png)<!-- -->![](README_files/figure-gfm/unnamed-chunk-2-13.png)<!-- -->
+
+## Faceted plot using facet grid and percentages
+
+Child age bands by SGURC classification:
+
+![](README_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
