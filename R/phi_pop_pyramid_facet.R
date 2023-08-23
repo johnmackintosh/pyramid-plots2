@@ -11,12 +11,13 @@
 #' @param councilcol name of column containing council values
 #' @param councilval desired council area
 #' @param localitycol name of column containing locality values
-#' @param localityval desired locality, if appropriate
 #' @param xcol  column containing age band descriptions
 #' @param ycol column containing age band totals or percentages
 #' @param fill_col column that defines the correct sex for the male/female split
+#' @param ... variables for faceting the final plot
 #' @param male_col colour for male column
 #' @param female_col colour for female column
+#' @param localityval desired locality, if appropriate
 #' @param facet_cols number of columns to facet by
 #' @param facet_scales should scales be `free` or `fixed`, passed to `facet_wrap`
 #' @param nbreaks number of breaks on the ageband value axis
@@ -30,7 +31,6 @@
 #' be formatted to display "%"
 #' @param gridded use facet_grid instead of facet_wrap? if TRUE, you must pass
 #' the variables to `...` as a formula (x~y)
-#' @param ... any additional values passed will be used to facet the final plot
 #'
 #' @return ggplot2 object
 #' @export
@@ -40,50 +40,37 @@
 #' councilcol = Council_area_name,
 #' councilval = "Highland",
 #' localitycol = CP_Name,
-#' localityval = NULL,
 #' xcol = child_age_band,
 #' ycol = percent_of_tot,
 #' fill_col = Sex,
-#' male_col = '#0391BF',
-#' female_col ="grey70",
-#' facet_cols = 3,
-#' facet_scales = "free",
-#' nbreaks = 8,
-#' chart_title = NULL,
-#' chart_subtitle = NULL,
-#' chart_caption = NULL,
-#' xlabs = "Age band",
-#' ylabs = "Population",
-#' printed = TRUE,
-#' percentage = FALSE,
-#' gridded = FALSE,
-#' CP_Name)
+#' CP_Name
+#' )
 #'
 #'
 #'
 
 phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
                                   councilcol,
-                                  councilval = NULL,
+                                  councilval,
                                   localitycol,
-                                  localityval = NULL,
                                   xcol,
                                   ycol,
-                                  fill_col = Sex,
+                                  fill_col,
+                                  ...,
                                   male_col = '#0391BF',
                                   female_col ="grey70",
+                                  localityval = NULL,
                                   facet_cols = 2,
                                   facet_scales = "fixed",
                                   nbreaks = 8,
-                                  chart_title = NULL,
-                                  chart_subtitle = NULL,
-                                  chart_caption = NULL,
+                                  chart_title = "",
+                                  chart_subtitle = "",
+                                  chart_caption = "",
                                   xlabs = "Age band",
                                   ylabs = "Population",
                                   printed = TRUE,
                                   percentage = FALSE,
-                                  gridded = FALSE,
-                                  ...) {
+                                  gridded = FALSE) {
 
 # helper function to wrap by whatever is passed to the dots argument
   wrap_by <- function(...) {
