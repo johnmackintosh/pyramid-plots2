@@ -21,8 +21,7 @@ Original data sources:
   <https://www.opendata.nhs.scot/dataset/urban-rural-classification>
 
 
-
-![](README_files/figure-gfm/visnet-1.png)<!-- -->
+![](README_files/figure-gfm/visnet-1.png)
 
 ## Pyramid Plots
 
