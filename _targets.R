@@ -165,6 +165,8 @@ list(
   # for each, create base data, then aggregate to 4 AB  & 9 Highland areas
   # with subarea to locality()
 
+
+
   # GRAND TOTAL Populations by CP Name
   tar_target(nhsh_high_level_populations, #  next step reduces to 4 A&B areas
              create_population_totals(nhsh_combined,
@@ -265,6 +267,17 @@ list(
                                                        "UrbanRural8fold2020"),
                                      !is.na(age_band) & child_age_band != "25+")),
 
+ # grand total Highland child populations by council area
+
+ tar_target(nhsh_council_child_totals,
+            create_population_totals(nhsh_combined,
+                                     "council_total",
+                                     grouping_cols = c("child_age_band",
+                                                       "CAName"),
+                                     !is.na(age_band) & Sex == "persons")),
+
+
+
 
  # the sex level totals by SUBHSCP - no age band grouping
  # might need these to recreate Figure 2 of CP Profile
@@ -326,6 +339,24 @@ list(
                                      new_var_name = "percent_of_tot",
                                      numerator = "child_age_band_total",
                                      divisor = "total_pop")),
+
+
+ # high level scotland, no 25+
+ tar_target(
+   scotland_high_level_child_age_band,
+   create_scotland_high_level(.DT = scotland_combined_child_age_band,
+                              Sex == "persons" & !child_age_band %in% "25+",
+                              col_to_sum = child_age_band_tots,
+                              new_var_name = "percent_of_tot")),
+
+ #high level scotland, including 25+
+ tar_target(
+   scotland_high_level_child_age_band_incl25,
+   create_scotland_high_level(.DT = scotland_combined_child_age_band,
+                              Sex == "persons",
+                              col_to_sum = child_age_band_tots,
+                              new_var_name = "percent_of_tot")),
+
 
  # by child_age_band including 25+
  tar_target(child_age_band_percent_tots_incl25,
