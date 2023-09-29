@@ -208,6 +208,15 @@ list(
                                                        "Council_area_name"),
                                      !is.na(age_band) & child_age_band != "25+")),
 
+ tar_target(child_yearly_age_totals,
+            create_population_totals(nhsh_combined,
+                                     new_var_name = "child_age_total",
+                                     grouping_cols = c("Sex",
+                                                       "CP_Name",
+                                                       "variable",
+                                                       "Council_area_name"),
+                                     !is.na(age_band) & child_age_band != "25+")),
+
  # include 25+ in calculations
  tar_target(child_age_band_tots_incl25,
             create_population_totals(nhsh_combined,
@@ -231,6 +240,19 @@ list(
                                                        "Sex",
                                                        "child_age_band"),
                                      !is.na(age_band) & child_age_band != "25+")),
+
+
+ tar_target(child_broad_age_band_tots_long_term,
+
+            create_population_totals(.DT = sape_long_term,
+                                     new_var_name = "child_age_band_total",
+                                     grouping_cols = c("CAName",
+                                                       "CP_Name",
+                                                       "Year",
+                                                       "Sex",
+                                                       "broad_child_age_band"),
+                                     !is.na(age_band) & child_age_band != "25+")),
+
 
  # include 25+ in calculations
  tar_target(child_age_band_tots_long_term_incl25,

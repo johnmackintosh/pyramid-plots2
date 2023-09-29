@@ -141,6 +141,12 @@ transformDT <- function(filename,
                                                  "12-17",
                                                  "18-24",
                                                  "25+"),
+                                      labels = c("0",
+                                                 "1-4",
+                                                 "5-11",
+                                                 "12-17",
+                                                 "18-24",
+                                                 "25+"),
                                       ordered = TRUE)][]
   .DT_tidy
 
