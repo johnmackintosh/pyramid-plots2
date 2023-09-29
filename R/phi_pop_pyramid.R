@@ -6,13 +6,15 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
                         xcol = pop_age_band,
                         ycol = pop_age_band_total,
                         fill_col = Sex,
+                        male_val = "Male",
+                        female_val = "Female",
                         male_col = '#0391BF',
                         female_col ="grey70",
-                        chart_title = NULL,
-                        chart_subtitle = NULL,
-                        chart_caption = NULL,
-                        xlabs = "Age band",
-                        ylabs = "Population",
+                        chart_title = "",
+                        chart_subtitle = "",
+                        chart_caption = "",
+                        xlabs = "",
+                        ylabs = "",
                         nbreaks = 8,
                         printed = TRUE,
                         save_plot = FALSE,
@@ -28,15 +30,15 @@ phi_pop_pyramid <- function(sourcedata = pyramid_tots,
   tempdf <-  sourcedata |>
     dplyr::filter({{filter_col}} == hscpval) |>
     dplyr::mutate({{ycol}} := dplyr::case_when(
-        {{fill_col}} == "Male" ~ {{ycol}} * -1,
+        {{fill_col}} == male_val ~ {{ycol}} * -1,
         .default = {{ycol}}),
         col_breaks = {{ycol}})
 
 tempdf <- tempdf |>
   dplyr::mutate({{fill_col}} := sex_as_factor({{fill_col}}))
 
-  female_data = tempdf |> dplyr::filter({{fill_col}} == "Female")
-  male_data = tempdf |> dplyr::filter({{fill_col}} == "Male")
+  female_data = tempdf |> dplyr::filter({{fill_col}} == female_val)
+  male_data = tempdf |> dplyr::filter({{fill_col}} == male_val)
 
   p <- ggplot2::ggplot(data = NULL,
                        ggplot2::aes({{xcol}},
@@ -49,9 +51,9 @@ tempdf <- tempdf |>
 
 p <- p + ggplot2::scale_fill_manual("",
                           guide = "legend",
-                           values = c("Male" = male_col,
-                                   "Female" = female_col),
-                           labels = c("Female", "Male"))
+                           values = c(male_val = male_col,
+                                   female_val = female_col),
+                           labels = c(female_val, male_val))
 
 
 

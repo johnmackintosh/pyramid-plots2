@@ -15,6 +15,8 @@
 #' @param ycol column containing age band totals or percentages
 #' @param fill_col column that defines the correct sex for the male/female split
 #' @param ... variables for faceting the final plot
+#' @male_val  e.g. one of "Male", "male", "males"
+#' @female_val  e.g. one of "Female", "female", "females"
 #' @param male_col colour for male column
 #' @param female_col colour for female column
 #' @param localityval desired locality, if appropriate
@@ -57,6 +59,8 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
                                   ycol,
                                   fill_col,
                                   ...,
+                                  male_val = "Male",
+                                  female_val = "Female",
                                   male_col = '#0391BF',
                                   female_col ="grey70",
                                   localityval = NULL,
@@ -116,17 +120,17 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
 
   sourcedata <- sourcedata %>%
     dplyr::mutate({{ycol}} := dplyr::case_when(
-      {{fill_col}} == "Male" ~ {{ycol}} * -1,
+      {{fill_col}} == male_val ~ {{ycol}} * -1,
       .default = {{ycol}}),
       col_breaks = {{ycol}} ) %>%
     dplyr::mutate(., {{fill_col}} := sex_as_factor({{fill_col}}))
 
 
   female_data = sourcedata  %>%
-    dplyr::filter(.,{{fill_col}} == "Female")
+    dplyr::filter(.,{{fill_col}} == female_val)
 
   male_data = sourcedata %>%
-    dplyr::filter(., {{fill_col}} == "Male")
+    dplyr::filter(., {{fill_col}} == male_val)
 
   p <- ggplot2::ggplot(data = NULL,
                        ggplot2::aes({{xcol}},
@@ -184,9 +188,9 @@ phi_pop_pyramid_facet <- function(sourcedata = pyramid_percent_tots,
 
   p <- p +  ggplot2::scale_fill_manual("",
                                        guide = "legend",
-                                       values = c("Male" = male_col,
-                                                  "Female" = female_col),
-                                       labels = c("Female", "Male"))
+                                       values = c(male_val = male_col,
+                                                  female_val = female_col),
+                                       labels = c(female_val, male_val))
 
   p <-  p +  ggplot2::labs(title = chart_title,
                           subtitle = chart_subtitle,

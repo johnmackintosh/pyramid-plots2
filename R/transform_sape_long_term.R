@@ -125,6 +125,18 @@ transform_sape_long_term <- function(sourcedata,
                                                  "18-24",
                                                  "25+"),
                                       ordered = TRUE)][]
+
+  .DT_tidy[!is.na(variable),
+           broad_child_age_band := fcase(
+             inrange(variable, 0, 17), "under 18",
+             variable >= 18, "18+")][]
+
+  .DT_tidy[, broad_child_age_band := factor(broad_child_age_band,
+                                            levels = c("under 18",
+                                                       "18+"),
+                                            ordered = TRUE)][]
+
+
   .DT_tidy
 
 }
