@@ -7,7 +7,11 @@ Code to tidy and plot SAPE 2021 data as population pyramids with
 {targets}, {purrr} and others
 
 Note : the input data (sape-2021-females.xlsx, sape-2021-males.xlsx and
-sape-2021-persons.xlsx) is Crown Copyright
+sape-2021-persons.xlsx) is Crown Copyright.  
+
+[NRS-copyright-and-disclaimer](https://www.nrscotland.gov.uk/copyright-and-disclaimer)   
+
+(C) Crown copyright. Data supplied by National Records of Scotland
 
 Original data sources:
 
